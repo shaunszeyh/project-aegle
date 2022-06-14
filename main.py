@@ -22,4 +22,4 @@ df_n = df.drop(["gender", "ever_married", "work_type", "smoking_status", "Reside
 # Trying with decision tree
 model = tree.DecisionTreeClassifier()
 model.fit(df_n.values, target.values)
-prediction = model.predict([[44.0, 0, 0, 85.28, 26.2, 0, 1, 0, 0]])
+prediction = model.predict([[44.0, 0, 0, 85.28, 26.2, 0, 1, 0, 0]]) # This is just one of the data entries will work on changing program to find accuracy of algo

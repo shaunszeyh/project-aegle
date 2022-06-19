@@ -17,4 +17,5 @@ df["smoking_status_n"] = le_ever_married.fit_transform(df["smoking_status"])
 
 df.drop(["id", "gender", "ever_married", "work_type", "smoking_status", "Residence_type"], axis=1, inplace=True)
 
+# Update CSV file
 df.to_csv("healthcare-dataset-stroke-data-n.csv", sep=',', index=False)

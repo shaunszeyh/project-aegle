@@ -9,3 +9,4 @@ y = df[["stroke"]]
 layer1 = Layer_Dense(9, 32)
 layer1.forward(np.array(X.loc[[0]]))
 print(layer1.output)
+

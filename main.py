@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn import tree, metrics, neighbors, svm
+from sklearn import tree, neighbors, svm
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.model_selection import train_test_split, cross_val_score, RepeatedStratifiedKFold
 from sklearn.linear_model import LogisticRegression
@@ -14,7 +14,7 @@ from imblearn.pipeline import Pipeline
 # Get the columns needed
 df = pd.read_csv("healthcare-dataset-stroke-data-n.csv")
 target = df["stroke"]
-df_n = df[["age", "gender_n", "hypertension", "heart_disease", "ever_married_n", "work_type_n", "avg_glucose_level", "bmi", "smoking_status_n",]]
+df_n = df[["age", "gender_n", "hypertension", "heart_disease", "ever_married_n", "work_type_n", "residence_type_n", "avg_glucose_level", "bmi", "smoking_status_n",]]
 
 # Models to be used
 models = [
@@ -43,6 +43,14 @@ steps = [('o', over), ('u', under)]
 pipeline = Pipeline(steps=steps)
 X, y = pipeline.fit_resample(df_n, target)
 
+# Find out which factors are more likely to affect one's chances of getting a stroke
+classifier = SelectKBest(score_func=f_classif, k=5)
+fits = classifier.fit(X, y)
+classifier_output = pd.DataFrame(fits.scores_)
+classifier_output = pd.concat([pd.DataFrame(X.columns), classifier_output], axis=1)
+classifier_output.columns = ["Attribute", "Score"]
+print(classifier_output.sort_values(by="Score", ascending=False))
+
 # Create train test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
@@ -53,17 +61,17 @@ def get_accuracy(model): # run and return accuracy of a model
     cr = classification_report(y_test, prediction)
     return cr
 
-# Trying with decision tree (Accuracy around 76%)
+# Trying with decision tree (Accuracy around 79%)
 decision_tree_model = models[0]
 print("Accuracy for Decision Tree:")
 print(get_accuracy(decision_tree_model))
 
-# Trying with K-Nearest Neighbours (Accuracy around 78%)
+# Trying with K-Nearest Neighbours (Accuracy around 80%)
 knn_model = models[1]
 print("Accuracy for KNN:")
 print(get_accuracy(knn_model))
 
-# Trying with Support Vector Machines (Accuracy around 75%)
+# Trying with Support Vector Machines (Accuracy around 80%)
 svm_model = models[2]
 print("Accuracy for SVM:")
 print(get_accuracy(svm_model))
@@ -73,15 +81,7 @@ regression = models[3]
 print("Accuracy for Logistic Regression:")
 print(get_accuracy(regression))
 
-# Trying with XGBClassifier (Accuracy around 81%)
+# Trying with XGBClassifier (Accuracy around 82%)
 xgb = models[4]
 print("Accuracy for XGBClassifier:")
 print(get_accuracy(xgb))
-
-# Find out which factors are more likely to affect one's chances of getting a stroke
-classifier = SelectKBest(score_func=f_classif, k=5)
-fits = classifier.fit(X, y)
-classifier_output = pd.DataFrame(fits.scores_)
-classifier_output = pd.concat([pd.DataFrame(X.columns), classifier_output], axis=1)
-classifier_output.columns = ["Attribute", "Score"]
-print(classifier_output.sort_values(by="Score", ascending=False))

@@ -20,5 +20,10 @@ df["smoking_status_n"] = le_smoking_status.fit_transform(df["smoking_status"])
 
 df.drop(["id", "gender", "ever_married", "work_type", "smoking_status", "Residence_type"], axis=1, inplace=True)
 
+# Normalize values
+for column in df:
+    if column != "stroke":
+        df[column] = df[column] / max(df[column])
+
 # Update CSV file
 df.to_csv("healthcare-dataset-stroke-data-n.csv", sep=',', index=False)

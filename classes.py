@@ -6,10 +6,11 @@ nnfs.init()
 
 class Layer_Dense: # Layer object that initialises and outputs the dot product of input with weights added to biases.
     def __init__(self, n_inputs, n_neurons):
-        self.weights = 0.10 * np.random.randn(n_inputs, n_neurons)
+        self.weights = 0.01 * np.random.randn(n_inputs, n_neurons)
         self.biases = np.zeros((1, n_neurons))
 
     def forward(self, inputs):
+        self.inputs = inputs
         self.output = np.dot(inputs, self.weights) + self.biases
 
     def backward(self, dvalues):
@@ -19,7 +20,8 @@ class Layer_Dense: # Layer object that initialises and outputs the dot product o
 
 class Activation_ReLU: # Activation function object that outputs inputs put into ReLU function
     def forward(self, inputs):
-        self.output = np.max(0, inputs)
+        self.inputs = inputs
+        self.output = np.maximum(0, inputs)
 
     def backward(self, dvalues):
         self.dinputs = dvalues.copy()
@@ -27,8 +29,9 @@ class Activation_ReLU: # Activation function object that outputs inputs put into
 
 class Activation_Softmax: # Activation function object for the final layer that outputs inputs put into Softmax function
     def forward(self, inputs):
-        exp_values = np.exp(inputs, axis=1, keepdims=True)
-        probabilities = exp_values / np.sum(inputs, axis=1, keepdims=True)
+        self.inputs = inputs
+        exp_values = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))
+        probabilities = exp_values / np.sum(exp_values, axis=1, keepdims=True)
         self.output = probabilities
 
     def backward(self, dvalues):
@@ -50,9 +53,9 @@ class Loss_CategoricalCrossEntropy(Loss): # Calculates loss value with Categoric
         samples = len(y_pred)
         y_pred_clipped = np.clip(y_pred, 1e-7, 1 - 1e-7)
 
-        if (len(y_true) == 1):
+        if len(y_true.shape) == 1:
             correct_confidences = y_pred_clipped[range(samples), y_true]
-        elif (len(y_true) == 2):
+        elif len(y_true.shape) == 2:
             correct_confidences = np.sum(y_pred_clipped * y_true, axis=1)
 
         negative_log_likelihoods = -np.log(correct_confidences)
@@ -87,3 +90,11 @@ class Activation_Softmax_Loss_CategoricalCrossEntropy():
         self.dinputs = dvalues.copy()
         self.dinputs[range(samples), y_true] -= 1
         self.dinputs = self.dinputs / samples
+
+class Optimizer_SGD:
+    def __init__(self, learning_rate=1.0):
+        self.learning_rate = learning_rate
+
+    def update_params(self, layer):
+        layer.weights += -self.learning_rate * layer.dweights
+        layer.biases += -self.learning_rate * layer.dbiases

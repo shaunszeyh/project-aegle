@@ -52,7 +52,7 @@ classifier_output.columns = ["Attribute", "Score"]
 print(classifier_output.sort_values(by="Score", ascending=False))
 
 # Create train test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1, stratify=y)
 
 def get_accuracy(model): # run and return accuracy of a model
     model.fit(X_train, y_train)
@@ -66,22 +66,22 @@ decision_tree_model = models[0]
 print("Accuracy for Decision Tree:")
 print(get_accuracy(decision_tree_model))
 
-# Trying with K-Nearest Neighbours (Accuracy around 80%)
+# Trying with K-Nearest Neighbours (Accuracy around 74%)
 knn_model = models[1]
 print("Accuracy for KNN:")
 print(get_accuracy(knn_model))
 
-# Trying with Support Vector Machines (Accuracy around 80%)
+# Trying with Support Vector Machines (Accuracy around 77%)
 svm_model = models[2]
 print("Accuracy for SVM:")
 print(get_accuracy(svm_model))
 
-# Trying with Logistic Regression (Accuracy around 77%)
+# Trying with Logistic Regression (Accuracy around 78%)
 regression = models[3]
 print("Accuracy for Logistic Regression:")
 print(get_accuracy(regression))
 
-# Trying with XGBClassifier (Accuracy around 82%)
+# Trying with XGBClassifier (Accuracy around 80%)
 xgb = models[4]
 print("Accuracy for XGBClassifier:")
 print(get_accuracy(xgb))

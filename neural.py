@@ -4,7 +4,6 @@ import numpy as np
 from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.pipeline import Pipeline
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
 # Neural network (Accuracy aroud 80%, has to be better)

@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from sklearn import tree, neighbors, svm
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.model_selection import train_test_split, cross_val_score, RepeatedStratifiedKFold

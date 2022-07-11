@@ -1,15 +1,12 @@
-I shall use this README to write down our to-do list, how you should contribute to this repo and to coordinate things in general
-
-Python modules to be used (will update you guys if more are to be needed):
-- Streamlit
-- Numpy
-- Scikit-learn
-- Matplotlib
-- Pandas
-
-List of videos where you can learn these modules (Do take them in this order as it will work with the general timeline of this project):
-- Pandas: https://www.youtube.com/watch?v=vmEHCJofslg (1 hr)
-- Numpy: https://www.youtube.com/watch?v=QUT1VHiLmm
-- Matplotlib: https://www.youtube.com/watch?v=3Xc3CA655Y4
-- Sklearn: https://www.youtube.com/watch?v=pqNCD_5r0IU
-- Streamlit: https://www.youtube.com/watch?v=JwSS70SZdyM&t=7715s
+# Project Aegle
+Hello there! 👋 This website calculates your risk of stroke and gives you some suggestions to lower it!\n
+## Stats about strokes
+- In Singapore, stroke is the **fourth** most common cause of death
+- Accounts for more than **10%** of all deaths
+- **26** new stroke cases per day in SG
+- This number will only **increase** with our rising ageing population
+- According to research, early prediction and prevention highly effective in reducing incidence rate
+## About the data used
+- Our model is generated from the dataset found from the [Stroke Prediction Dataset](https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset)
+- Data is taken from more than 5000 people from India (We would have taken it from SG if this data was readily available)
+- Datapoints are gender, age, hypertension status, heart disease status, marriage status, work type, residence type, average glucose level, bmi and smoking status

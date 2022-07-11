@@ -1,5 +1,5 @@
 # Project Aegle
-Hello there! 👋 This website calculates your risk of stroke and gives you some suggestions to lower it!\n
+Hello there! 👋 This repo is behind the website which calculates your risk of stroke and gives you some suggestions to lower it!
 ## Stats about strokes
 - In Singapore, stroke is the **fourth** most common cause of death
 - Accounts for more than **10%** of all deaths

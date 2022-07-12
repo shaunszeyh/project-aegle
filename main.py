@@ -36,11 +36,8 @@ for model in models[:-1]: # Cannot do this for XGBClassifier, will cause termina
     print('Mean ROC AUC: %.3f' % np.mean(scores))
 
 # Oversample minority class and undersample majority to balance data (Dataset is heavily skewed towards patients with negative stroke results)
-over = SMOTE(sampling_strategy=0.1)
-under = RandomUnderSampler(sampling_strategy=0.5)
-steps = [('o', over), ('u', under)]
-pipeline = Pipeline(steps=steps)
-X, y = pipeline.fit_resample(df_n, target)
+smote = SMOTE(random_state=42)
+X, y = smote.fit_resample(df_n, target)
 
 # Find out which factors are more likely to affect one's chances of getting a stroke
 classifier = SelectKBest(score_func=f_classif, k=5)

@@ -69,6 +69,7 @@ fig.tight_layout()
 st.write(fig, "\n")
 
 ### End of Graph 1, Start of Graph 2 ###
+# Graph for the boxplot of glucose level and bmi
 
 age_pos_median = np.median(age_pos)
 age_neg_median = np.median(age_neg)
@@ -258,7 +259,7 @@ create_graph(labels, "Smoke Status by Smoking Status", pos_percentage, neg_perce
 
 ### End of Graph 9 ###
 
-
+# Graph for the distribution of all the factors
 
 st.markdown(
     '''

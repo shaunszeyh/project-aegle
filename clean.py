@@ -4,7 +4,6 @@ from sklearn.preprocessing import LabelEncoder
 # Cleaning up the data (dropping columns, setting label, etc)
 df = pd.read_csv("healthcare-dataset-stroke-data.csv", index_col=False)
 df.fillna(df.mean(numeric_only=True), inplace=True)
-df["smoking_status"].replace({"Unknown": "never smoked"}, inplace=True)
 
 le_gender = LabelEncoder()
 le_ever_married = LabelEncoder()
@@ -27,3 +26,5 @@ for column in df:
 
 # Update CSV file
 df.to_csv("healthcare-dataset-stroke-data-n.csv", sep=',', index=False)
+
+print("Program has completed")

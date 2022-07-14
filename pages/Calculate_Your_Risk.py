@@ -26,9 +26,14 @@ conversion = {
         "No": 0.0,
     },
     "_work": {
-
+        "Government job": 0.0,
+        "Private": 0.5,
+        "Self-employed": 0.75,
+        "Child": 1.0
     },
     "_residence": {
+        "Rural": 0.0,
+        "Urban": 1.0,
     },
     "_smoking": {
 
@@ -46,8 +51,8 @@ with st.form("my_form"):
     hypertension = conversion["_hypertension"][st.radio("Do you have hypertension?", ["Yes", "No"])]
     heart = conversion["_heart"][st.radio("Do you have heart disease?", ["Yes", "No"])]
     marriage = conversion["_marriage"][st.radio("Have you been married?", ["Yes", "No"])]
-    work = st.radio("What kind of job do you have?", ["Government job", "Private", "Self-employed", "Child"])
-    residence = st.radio("What is your residence type?", ["Rural", "Urban"])
+    work = conversion["_work"][st.radio("What kind of job do you have?", ["Government job", "Private", "Self-employed", "Child"])]
+    residence = conversion["_residence"][st.radio("What is your residence type?", ["Rural", "Urban"])]
     glucose = convert_numeric(st.number_input("What is your average glucose level? (in mmol / L)", min_value=0), "avg_glucose_level")
     bmi = convert_numeric(st.number_input("What is your BMI (Body Mass Index)?", min_value=0.0, step=0.1), "bmi")
     smoking = st.radio("What is your smoking status?", ["Fomerly smoked", "Never smoked", "Smokes"])

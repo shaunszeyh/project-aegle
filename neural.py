@@ -53,9 +53,14 @@ for epoch in range(10001):
         acccuracy = np.mean(predictions==y_test)
         print("Test acc:", acccuracy, "loss:", loss)
 
+# Save the weights and biases to a .npy file for use in website
+
+np.save('parameters/weights1.npy', dense1.weights)
+np.save('parameters/biases1.npy', dense1.biases)
+np.save('parameters/weights2.npy', dense2.weights)
+np.save('parameters/biases2.npy', dense2.biases)
+
 # Check test split after training
-
-
 
 def run_neural_network(inputs):
     softmax = Activation_Softmax()
@@ -66,6 +71,6 @@ def run_neural_network(inputs):
     predictions = np.argmax(softmax.output, axis=1)
     return predictions, np.max(softmax.output)
 
-#print(run_neural_network(np.array([1.0,1.0,0.0,0.22985206447339368,0.20799180327868855,0.0,1.0,0.5,1.0,0.0]))) # Should return [0]
+print(run_neural_network(np.array([1.0,1.0,0.0,0.22985206447339368,0.20799180327868855,0.0,1.0,0.5,1.0,0.0]))) # Should return [0]
 
 

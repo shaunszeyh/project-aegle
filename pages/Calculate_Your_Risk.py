@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from sympy import hyper
 from classes import *
 import numpy as np
 
@@ -71,11 +72,86 @@ def run_neural_network(inputs):
     predictions = np.argmax(softmax.output, axis=1)
 
     if predictions:
-        predictions = "Stroke"
+        predictions = "Based on your current data, you are at risk of suffering a stroke in the near future with a " + str(round(np.max(softmax.output), 1) * 100) + "% confidence rate."
+        boolean = 1
     else:
-        predictions = "No stroke"
+        predictions = "Based on your current data, you are not at risk of suffering a stroke in the near future with a " + str(round(np.max(softmax.output), 1) * 100) + "% confidence rate."
+        boolean = 0
 
-    return predictions, np.max(softmax.output)
+    return predictions, boolean
+
+def data_breakdown(gender, age, hypertension, heart, marriage, work, residence, glucose, bmi, smoking):
+
+    if hypertension == 0.0 and heart == 0.0 and glucose < 0.5 and bmi < 0.5 and (smoking == 0.5 or smoking == 0.25):
+        st.markdown(
+        '''
+            Your high chance of stroke is most likely caused by your age. This is a rare exception as a stroke is usually caused by an underlying disease or condition. In your case, all of your vitals seem to be within a healthy range. Just live your life like you normally would.
+        '''
+        )
+
+    #[glucose, hypertension, heart, smoking, bmi]
+    count = 0
+
+    if count < 3 and glucose > 0.5:
+        st.markdown(
+        '''
+            #### Your glucose level is higher than average and is a possible cause of your higher risk of stroke.
+            ##### Here are some ways to lower your average glucose level:
+            1. Exercise regularly
+            2. Manage your carbohydrate intake
+            3. Eat more fiber
+            4. Drink water and stay hydrated
+            5. Implement portion control
+            6. Choose foods with a low glycemic index
+            7. Try to manage your stress levels
+            8. Monitor your blood sugar levels
+            9. Get enough quality sleep
+            10. Eat enough foods rich in chromium and magnesium
+            11. Consider adding specific foods to your diet (Apple cider vinegar, cinnamon, berberine, fenugreek seeds)
+            12. Maintain a moderate weight
+            13. Eat healthy snacks more frequently
+            14. Eat probiotic-rich foods
+            _For more information on glucose level, visit [this website](https://www.healthline.com/nutrition/15-ways-to-lower-blood-sugar#The-bottom-line) or consult your doctor_ \n
+        '''
+        )
+        count += 1
+
+    if count < 3 and hypertension == 1.0:
+        st.markdown(
+        '''
+            #### Your hypertension status could be a possible cause of your higher risk of stroke 
+            ##### Here are some ways to reduce your high blood pressure without the use of medications:
+            1. Lose extra weight and watch your waistline
+            2. Exercise regularly
+            3. Eat a healthy diet
+            4. Reduce salt (sodium) in your diet
+            5. Limit alcohol
+            6. Quit smoking
+            7. Get a good night's sleep
+            8. Reduce your stress levels
+            9. Monitor your blood pressure at home and get regular checkups 
+            _For more information on hypertension, visit [this website](https://www.mayoclinic.org/diseases-conditions/high-blood-pressure/in-depth/high-blood-pressure/art-20046974) or consult your doctor_ \n
+
+        '''
+        )
+        count += 1
+
+    if count < 3 and heart == 1.0:
+        st.markdown(
+        '''
+            #### Your heart disease could be a possible cause of your higher risk of stroke
+            ##### However, there is no known cure to heart disease. Fortunately, treatment can help manage the symptoms. Treatment can include:
+            1. Regular exercise
+            2. Quit smoking
+            3. Angioplasty
+            4. Surgery
+            _For more information on heart disease, visit [this website](https://www.nhs.uk/conditions/coronary-heart-disease/#:~:text=Treating%20coronary%20heart%20disease%20) or consult your doctor_ \n
+
+        '''
+        )
+        count += 1
+        
+        
 
 with st.form("my_form"):
     gender = conversion["_gender"][st.radio("Select your gender", ["Male", "Female"])]
@@ -90,11 +166,15 @@ with st.form("my_form"):
     smoking = conversion["_smoking"][st.radio("What is your smoking status?", ["Formerly smoked", "Never smoked", "Smokes"])]
     
     submitted = st.form_submit_button("Submit My Data")
+
+    inputs = gender, age, hypertension, heart, marriage, work, residence, glucose, bmi, smoking
     
 if submitted:
-    st.write(gender, age, hypertension, heart, marriage, work, residence, glucose, bmi, smoking)
+    st.write(inputs)
 
-    stroke, confidence = run_neural_network(np.array([age, hypertension, heart, glucose, bmi, gender, marriage, work, residence, smoking]))
-
+    stroke, boolean = run_neural_network(np.array([inputs]))
     st.write(stroke)
-    st.write("Confidence:", str(round(confidence * 100, 1)) + "%")
+
+    if boolean:
+        data_breakdown(gender, age, hypertension, heart, marriage, work, residence, glucose, bmi, smoking)
+

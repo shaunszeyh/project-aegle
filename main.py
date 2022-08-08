@@ -1,39 +1,21 @@
 import pandas as pd
-import numpy as np
 from sklearn import tree, neighbors, svm
 from sklearn.feature_selection import SelectKBest, f_classif
-from sklearn.model_selection import train_test_split, cross_val_score, RepeatedStratifiedKFold
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, classification_report
 from xgboost import XGBClassifier
 from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import RandomUnderSampler
-from imblearn.pipeline import Pipeline
+from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import KFold 
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import AdaBoostClassifier 
 
 # Get the columns needed
 df = pd.read_csv("healthcare-dataset-stroke-data-n.csv")
 target = df["stroke"]
 df_n = df[["age", "gender_n", "hypertension", "heart_disease", "ever_married_n", "work_type_n", "residence_type_n", "avg_glucose_level", "bmi", "smoking_status_n",]]
-
-# Models to be used
-models = [
-    tree.DecisionTreeClassifier(criterion='entropy', max_depth=3, random_state=0), 
-    neighbors.KNeighborsClassifier(n_neighbors=25, weights='uniform'),
-    svm.SVC(),
-    LogisticRegression(max_iter=5000),
-    XGBClassifier(objective='binary:logistic', n_estimators=100000, max_depth=5, learning_rate=0.001, n_jobs=-1, tree_method='hist')
-]
-
-# Determine if SMOTE model results in correct application of oversampling
-for model in models[:-1]: # Cannot do this for XGBClassifier, will cause terminal to crash :(
-    over = SMOTE(sampling_strategy=0.1)
-    under = RandomUnderSampler(sampling_strategy=0.5)
-    steps = [('o', over), ('u', under), ('model', model)]
-    pipeline = Pipeline(steps=steps)
-    # Evaluate pipeline
-    cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=3, random_state=1)
-    scores = cross_val_score(pipeline, df_n, target, scoring='roc_auc', cv=cv, n_jobs=-1)
-    print('Mean ROC AUC: %.3f' % np.mean(scores))
 
 # Oversample minority class and undersample majority to balance data (Dataset is heavily skewed towards patients with negative stroke results)
 smote = SMOTE(random_state=42)
@@ -48,36 +30,108 @@ classifier_output.columns = ["Attribute", "Score"]
 print(classifier_output.sort_values(by="Score", ascending=False))
 
 # Create train test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1, stratify=y)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42, stratify=y, shuffle=True)
 
 def get_accuracy(model): # run and return accuracy of a model
     model.fit(X_train, y_train)
     prediction = model.predict(X_test)
     cm = confusion_matrix(y_test, prediction)
     cr = classification_report(y_test, prediction)
-    return cr
+    auc = roc_auc_score(y_test, prediction)
+    return cr, auc
 
-# Trying with decision tree (Accuracy around 79%)
-decision_tree_model = models[0]
-print("Accuracy for Decision Tree:")
-print(get_accuracy(decision_tree_model))
+# Accuracy of Random Forest: 87%
+# ROC AUC of Random Forest: 0.87
+kf = KFold(n_splits=5, shuffle=True, random_state=4)
+rf_model = RandomForestClassifier(random_state=42)
+rf_param = {
+    "n_estimators": [50, 100, 200, 500, 1000],
+    "max_depth": [3, 4, 5, 8],
+}
+grid_rf = GridSearchCV(rf_model, rf_param, scoring='roc_auc', cv=kf, n_jobs=-1)
 
-# Trying with K-Nearest Neighbours (Accuracy around 74%)
-knn_model = models[1]
-print("Accuracy for KNN:")
-print(get_accuracy(knn_model))
+# Accuracy of Logistic Regression: 79%
+# ROC AUC of Logistic Regression: 0.78
+lr_model = LogisticRegression(solver='liblinear', random_state=42, max_iter=1000)
+lr_param = {
+    "penalty": ["l1", "l2"], 
+    "C": [0.01, 0.05, 0.1, 0.5, 1.0, 10.0, 15],
+}
+grid_lr = GridSearchCV(lr_model, lr_param, scoring='roc_auc', cv=5, n_jobs=-1)
 
-# Trying with Support Vector Machines (Accuracy around 77%)
-svm_model = models[2]
-print("Accuracy for SVM:")
-print(get_accuracy(svm_model))
+# Accuracy of AdaBoost: 82%
+# ROC AUC of AdaBoost: 0.82
+ab_model = AdaBoostClassifier(random_state=42)
+ab_param = {
+    'n_estimators': [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 20],
+    'learning_rate': [(0.97 + x / 100) for x in range(0, 8)],
+    'algorithm': ["SAMME", "SAMME.R"],
+}
+grid_ab = GridSearchCV(ab_model, ab_param, scoring='roc_auc', cv=5, n_jobs=-1)
 
-# Trying with Logistic Regression (Accuracy around 78%)
-regression = models[3]
-print("Accuracy for Logistic Regression:")
-print(get_accuracy(regression))
+# Accuracy of XGBClassifier: 95%
+# ROC AUC of XGBClassifier: 0.95
+xgb_model = XGBClassifier(objective='binary:logistic', nthread=4, seed=42)
+xgb_param = {
+    'max_depth': range(2, 10, 1),
+    'n_estimators': range(60, 220, 40),
+    'learning_rate': [0.1, 0.01, 0.05],
+}
+grid_xgb = GridSearchCV(xgb_model, xgb_param, scoring='roc_auc', cv=5, n_jobs=-1)
 
-# Trying with XGBClassifier (Accuracy around 80%)
-xgb = models[4]
-print("Accuracy for XGBClassifier:")
-print(get_accuracy(xgb))
+# Accuracy of Random Forest: 87%
+# ROC AUC of Random Forest: 0.87
+tree_model = tree.DecisionTreeClassifier(random_state=42)
+tree_param = {
+    'max_features': ['sqrt', 'log2'],
+    'ccp_alpha': [0.1, 0.01, 0.001, 1.0],
+    'max_depth': [5, 6, 7, 8, 9], 
+    'criterion': ['gini', 'entropy'],
+}
+grid_tree = GridSearchCV(tree_model, tree_param, scoring='roc_auc', cv=5, n_jobs=-1)
+
+# Accuracy of KNN: 90%
+# ROC AUC of KNN: 0.88
+knn_model = neighbors.KNeighborsClassifier()
+knn_param = {
+    'n_neighbors': range(3, 10),
+    'weights': ['uniform', 'distance'],
+    'algorithm': ['auto', 'ball_tree', 'kd_tree'],
+}
+grid_knn = GridSearchCV(knn_model, knn_param, scoring='roc_auc', cv=5, n_jobs=-1)
+
+# Accuracy of SVM: 82%
+# ROC AUC of SVM: 0.82
+svm_model = svm.SVC(random_state=42)
+svm_param = {
+    'C': [0.2, 0.4, 0.6, 0.8, 1.0],
+    'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
+    'gamma': ['scale', 'auto'],
+}
+grid_svm = GridSearchCV(svm_model, svm_param, scoring='roc_auc', cv=5, n_jobs=-1)
+
+models = [
+    grid_tree,
+    grid_knn,
+    grid_svm,
+    grid_lr,
+    grid_xgb,
+    grid_rf,
+    grid_ab,
+]
+
+model_names = [
+    "Decision Tree",
+    "K-Nearest Neighbours",
+    "Support Vector Machines",
+    "Logistic Regression",
+    "XGBClassifier",
+    "Random Forest",
+    "AdaBoost",
+]
+
+for i in range(len(models)):
+    acc, auc = get_accuracy(models[i])
+    print("Accuracy for " + model_names[i] + ":")
+    print(acc)
+    print("ROC AUC Score:", round(auc, 2))

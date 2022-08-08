@@ -72,10 +72,10 @@ def run_neural_network(inputs):
     predictions = np.argmax(softmax.output, axis=1)
 
     if predictions:
-        predictions = "Based on your current data, you are at risk of suffering a stroke in the near future with a " + str(round(np.max(softmax.output), 1) * 100) + "% confidence rate."
+        predictions = "Based on your current data, you are at risk of suffering a stroke in the near future with a " + str(round(np.max(softmax.output) * 100, 1)) + "% confidence rate."
         boolean = 1
     else:
-        predictions = "Based on your current data, you are not at risk of suffering a stroke in the near future with a " + str(round(np.max(softmax.output), 1) * 100) + "% confidence rate."
+        predictions = "Based on your current data, you are not at risk of suffering a stroke in the near future with a " + str(round(np.max(softmax.output) * 100, 1)) + "% confidence rate."
         boolean = 0
 
     return predictions, boolean
@@ -85,7 +85,7 @@ def data_breakdown(gender, age, hypertension, heart, marriage, work, residence, 
     if hypertension == 0.0 and heart == 0.0 and glucose < 0.5 and bmi < 0.5 and (smoking == 0.5 or smoking == 0.25):
         st.markdown(
         '''
-            Your high chance of stroke is most likely caused by your age. This is a rare exception as a stroke is usually caused by an underlying disease or condition. In your case, all of your vitals seem to be within a healthy range. Just live your life like you normally would.
+            Your high chance of stroke is most likely caused by your age. This is an exception as a stroke is usually caused by an underlying disease or condition. In your case, all of your vitals seem to be within a healthy range. Just continue living your life like you normally would, or perhaps consider trying to live a healthier lifestyle [here](https://www.who.int/philippines/news/feature-stories/detail/20-health-tips-for-2020).
         '''
         )
 
@@ -111,7 +111,7 @@ def data_breakdown(gender, age, hypertension, heart, marriage, work, residence, 
             12. Maintain a moderate weight
             13. Eat healthy snacks more frequently
             14. Eat probiotic-rich foods
-            _For more information on glucose level, visit [this website](https://www.healthline.com/nutrition/15-ways-to-lower-blood-sugar#The-bottom-line) or consult your doctor_ \n
+            _For more information on glucose level, visit [this website](https://www.healthline.com/nutrition/15-ways-to-lower-blood-sugar) or consult your doctor_ \n
         '''
         )
         count += 1
@@ -150,6 +150,33 @@ def data_breakdown(gender, age, hypertension, heart, marriage, work, residence, 
         '''
         )
         count += 1
+
+    if count < 3 and smoking == 1.0:
+        st.markdown(
+        '''
+            #### Your high risk of suffering a stoke could be due to your smoking. Do consider quitting cigarettes to lower this risk
+            ##### Here are some helplines and resources to assist you in doing so:
+            - [I Quit Programme](https://www.healthhub.sg/programmes/88/iquit)
+            - QuitLine: 1800 438 2000
+            - [Tips to quit smoking](https://www.healthhub.sg/live-healthy/598/quittips)
+        '''
+        )
+        count += 1
+
+    if count < 3 and bmi > 0.5:
+        st.markdown(
+        '''
+            #### Your body mass index is higher than average and could attribute to your high risk of suffering a stroke
+            ##### Here are some ways to reduce your BMI:
+            1. Balance your food choices
+            2. Watch what you eat
+            3. Get at least 150 minutes of physical activity weekly
+            4. Build up your strength
+            5. Have regular meals
+            _For more information on heart disease, visit [this website](https://www.healthhub.sg/live-healthy/408/Healthy%20Weight%20Loss) or consult your doctor_ \n 
+        '''
+        )
+        count += 1
         
         
 
@@ -161,7 +188,7 @@ with st.form("my_form"):
     marriage = conversion["_marriage"][st.radio("Have you been married?", ["Yes", "No"])]
     work = conversion["_work"][st.radio("What kind of job do you have?", ["Government job", "Private", "Self-employed", "Child"])]
     residence = conversion["_residence"][st.radio("What is your residence type?", ["Rural", "Urban"])]
-    glucose = convert_numeric(st.number_input("What is your average glucose level? (in mmol / L)", min_value=0), "avg_glucose_level")
+    glucose = convert_numeric(st.number_input("What is your average glucose level? (in mg / dL)", min_value=0), "avg_glucose_level")
     bmi = convert_numeric(st.number_input("What is your BMI (Body Mass Index)?", min_value=0.0, step=0.1), "bmi")
     smoking = conversion["_smoking"][st.radio("What is your smoking status?", ["Formerly smoked", "Never smoked", "Smokes"])]
     
@@ -177,4 +204,6 @@ if submitted:
 
     if boolean:
         data_breakdown(gender, age, hypertension, heart, marriage, work, residence, glucose, bmi, smoking)
+    else:
+        st.write("Do continue keeping up with your healthy lifestyle to enjoy a stroke-free life!")
 

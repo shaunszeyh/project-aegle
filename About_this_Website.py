@@ -23,11 +23,26 @@ st.markdown(
     - Our model is generated from the dataset found from the [Stroke Prediction Dataset](https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset)
     - Data is taken from more than 5000 patients from India (We would have taken it from SG if this data was made readily available here)
     - Datapoints are gender, age, hypertension status, heart disease status, marriage status, work type, residence type, average glucose level, bmi and smoking status
-    ### Analysis and breakdown of the data
-    From here we can see which are the factors which are more likely to cause a stroke
+    
     '''
 )
 
+st.markdown(
+    '''
+    ## How do we calculate your risk of stroke?
+    This problem of determining whether you will suffer a stroke in the near future based on your vitals is a classification problem. A classification problem is usually best solved by machine learning. However, there exists a multitude of machine learning algorithms. We had to choose the best one to fit this circumstance. After testing out 8 such models, it was determined that XGBClassifier from the XGBoost library was the most accurate, with an accuracy rate of 95%.  
+    ### More about XGBClassifier
+    XGBClassifier comes from the xgboost library, which stands for eXtreme Gradient Boosting, which is a boosting algorithm based on a gradient boosted decision tree algorithm. XGBoost applies a better regularization technique to reduce overfitting. (Most of you should not have to be concerned of what this means) \n
+    _More information can be found from the [xgboost documentation website](https://xgboost.readthedocs.io/en/stable/index.html)_
+    '''
+)
+
+st.markdown(
+    '''
+    ## Analysis and breakdown of the data
+    From here we can see which are the factors which are more likely to cause a stroke
+    '''
+)
 df = pd.read_csv("healthcare-dataset-stroke-data.csv")
 
 ### Start of Graph 1 ###
@@ -67,7 +82,6 @@ fig.tight_layout()
 st.write(fig, "\n")
 
 ### End of Graph 1, Start of Graph 2 ###
-# Graph for the boxplot of glucose level and bmi
 
 age_pos_median = np.median(age_pos)
 age_neg_median = np.median(age_neg)
@@ -255,14 +269,6 @@ neg_percentage = [unknown_neg_percentage, former_neg_percentage, never_neg_perce
 
 create_graph(labels, "Smoke Status by Smoking Status", pos_percentage, neg_percentage)
 
-### End of Graph 9 ###
 
-# Graph for the distribution of all the factors
-
-st.markdown(
-    '''
-    ## How do we calculate your risk of stroke?
-    '''
-)
 
 

@@ -2,20 +2,15 @@ from classes import *
 import pandas as pd
 import numpy as np
 from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import RandomUnderSampler
-from imblearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 
-# Neural network (Accuracy aroud 80%, has to be better)
+# Neural network (Accuracy aroud 86%)
 df = pd.read_csv("healthcare-dataset-stroke-data-n.csv")
 X = df[["age", "hypertension", "heart_disease", "avg_glucose_level", "bmi", "gender_n", "ever_married_n", "work_type_n", "residence_type_n","smoking_status_n"]]
 y = df[["stroke"]]
-over = SMOTE(sampling_strategy=0.1)
-under = RandomUnderSampler(sampling_strategy=0.5)
-steps = [('o', over), ('u', under)]
-pipeline = Pipeline(steps=steps)
-X, y = pipeline.fit_resample(np.array(X), np.array(y))
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1, stratify=y)
+smote = SMOTE(random_state=42)
+X, y = smote.fit_resample(np.array(X), np.array(y))
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42, stratify=y, shuffle=True)
 
 dense1 = Layer_Dense(10, 64)
 activation1 = Activation_ReLU()

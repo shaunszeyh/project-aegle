@@ -209,8 +209,6 @@ with st.form("my_form"):
     inputs = gender, age, hypertension, heart, marriage, work, residence, glucose, bmi, smoking
     
 if submitted:
-    st.write(inputs)
-
     #stroke, boolean = run_neural_network(np.array([inputs]))
     stroke, boolean = run_xgb(np.array([inputs]))
     st.title(stroke)

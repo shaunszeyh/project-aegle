@@ -89,7 +89,7 @@ def run_xgb(inputs):
     if boolean:
         predictions = "Based on your current data, you are at risk of suffering a stroke in the near future should your health status continue at this level."
     else:
-        predictions = "Based on your current data, you are not at risk of suffering a stroke in the near future as long as your health status continue at this level."
+        predictions = "Based on your current data, you are not at risk of suffering a stroke in the near future as long as your health status continues at this level."
     return predictions, boolean
 
 def data_breakdown(gender, age, hypertension, heart, marriage, work, residence, glucose, bmi, smoking):

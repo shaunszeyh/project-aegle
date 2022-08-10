@@ -11,6 +11,7 @@ from sklearn.model_selection import KFold
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import AdaBoostClassifier 
+import pickle
 
 # Get the columns needed
 df = pd.read_csv("healthcare-dataset-stroke-data-n.csv")
@@ -38,7 +39,7 @@ def get_accuracy(model): # run and return accuracy of a model
     cm = confusion_matrix(y_test, prediction)
     cr = classification_report(y_test, prediction)
     auc = roc_auc_score(y_test, prediction)
-    return cr, auc
+    return model, cr, auc
 
 # Accuracy of Random Forest: 87%
 # ROC AUC of Random Forest: 0.87
@@ -121,17 +122,21 @@ models = [
 ]
 
 model_names = [
-    "Decision Tree",
-    "K-Nearest Neighbours",
-    "Support Vector Machines",
-    "Logistic Regression",
+    "Decision_Tree",
+    "K-Nearest_Neighbours",
+    "Support_Vector_Machines",
+    "Logistic_Regression",
     "XGBClassifier",
-    "Random Forest",
+    "Random_Forest",
     "AdaBoost",
 ]
 
 for i in range(len(models)):
-    acc, auc = get_accuracy(models[i])
+    model, acc, auc = get_accuracy(models[i])
+    filename = "parameters/" + model_names[i] + ".sav"
+    pickle.dump(model, open(filename, "wb"))
     print("Accuracy for " + model_names[i] + ":")
     print(acc)
     print("ROC AUC Score:", round(auc, 2))
+
+# Save parameters of XGBClassifier model to use in website

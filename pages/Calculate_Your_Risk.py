@@ -3,11 +3,14 @@ import pandas as pd
 from sympy import hyper
 from classes import *
 import numpy as np
+import pickle
 
 st.markdown(
 '''
     # Calculate Your Risk
-    Note: We will not be collecting your data so be rest assured when you key in your information.    
+    Note: We will not be collecting your data so be rest assured when you key in your information. \n  
+    This model might have been trained on unreliable data and the model is not perfectly accurate. \n
+    This should not be taken as formal medical advice. Consult your doctor for legitimate medical advice. \n
 '''
 )
 
@@ -78,6 +81,15 @@ def run_neural_network(inputs):
         predictions = "Based on your current data, you are not at risk of suffering a stroke in the near future with a " + str(round(np.max(softmax.output) * 100, 1)) + "% confidence rate."
         boolean = 0
 
+    return predictions, boolean
+
+def run_xgb(inputs):
+    xgb = pickle.load(open("parameters/XGBClassifier.sav", "rb"))
+    boolean = xgb.predict(inputs)
+    if boolean:
+        predictions = "Based on your current data, you are at risk of suffering a stroke in the near future should your health status continue at this level."
+    else:
+        predictions = "Based on your current data, you are at risk of suffering a stroke in the near future as long as your health status continue at this level."
     return predictions, boolean
 
 def data_breakdown(gender, age, hypertension, heart, marriage, work, residence, glucose, bmi, smoking):
@@ -177,7 +189,7 @@ def data_breakdown(gender, age, hypertension, heart, marriage, work, residence, 
         '''
         )
         count += 1
-        
+            
         
 
 with st.form("my_form"):
@@ -199,8 +211,9 @@ with st.form("my_form"):
 if submitted:
     st.write(inputs)
 
-    stroke, boolean = run_neural_network(np.array([inputs]))
-    st.write(stroke)
+    #stroke, boolean = run_neural_network(np.array([inputs]))
+    stroke, boolean = run_xgb(np.array([inputs]))
+    st.title(stroke)
 
     if boolean:
         data_breakdown(gender, age, hypertension, heart, marriage, work, residence, glucose, bmi, smoking)

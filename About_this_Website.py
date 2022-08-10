@@ -268,7 +268,3 @@ pos_percentage = [unknown_pos_percentage, former_pos_percentage, never_pos_perce
 neg_percentage = [unknown_neg_percentage, former_neg_percentage, never_neg_percentage, smokes_neg_percentage]
 
 create_graph(labels, "Smoke Status by Smoking Status", pos_percentage, neg_percentage)
-
-
-
-

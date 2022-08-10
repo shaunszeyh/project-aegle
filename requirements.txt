@@ -4,3 +4,4 @@ matplotlib
 numpy
 nnfs
 sympy
+pickle

@@ -108,6 +108,7 @@ def data_breakdown(gender, age, hypertension, heart, marriage, work, residence, 
         st.markdown(
         '''
             #### Your glucose level is higher than average and is a possible cause of your higher risk of stroke.
+            #### Try to aim for a blood glucose level of less than 114 mg / dL
             ##### Here are some ways to lower your average glucose level:
             1. Exercise regularly
             2. Manage your carbohydrate intake
@@ -201,7 +202,9 @@ with st.form("my_form"):
     work = conversion["_work"][st.radio("What kind of job do you have?", ["Government job", "Private", "Self-employed", "Child"])]
     residence = conversion["_residence"][st.radio("What is your residence type?", ["Rural", "Urban"])]
     glucose = convert_numeric(st.number_input("What is your average glucose level? (in mg / dL)", min_value=0), "avg_glucose_level")
+    st.markdown('''[How do I measure my average glucose level?](https://www.healthhub.sg/programmes/162/diabetes-hub/diabetes-management/monitoring)''')
     bmi = convert_numeric(st.number_input("What is your BMI (Body Mass Index)?", min_value=0.0, step=0.1), "bmi")
+    st.markdown('''[How do I measure my BMI?](https://www.healthhub.sg/programmes/93/bmi-calculator)''')
     smoking = conversion["_smoking"][st.radio("What is your smoking status?", ["Formerly smoked", "Never smoked", "Smokes"])]
     
     submitted = st.form_submit_button("Submit My Data")

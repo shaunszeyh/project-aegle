@@ -16,5 +16,7 @@ st.markdown(
     - https://www.healthhub.sg/programmes/88/iquit
     - 5 quit tips to quit smoking for good. HealthHub. (n.d.). Retrieved July 17, 2022, from https://www.healthhub.sg/live-healthy/598/quittips 
     - Lose weight permanently! HealthHub. (n.d.). Retrieved July 17, 2022, from https://www.healthhub.sg/live-healthy/408/Healthy%20Weight%20Loss 
+    - Health Promotion Board. (n.d.). Diabetes hub: Guide to managing diabetes. HealthHub. Retrieved August 12, 2022, from https://www.healthhub.sg/programmes/162/diabetes-hub/diabetes-management/monitoring 
+    - Health Promotion Board. (n.d.). BMI Calculator. HealthHub. Retrieved August 12, 2022, from https://www.healthhub.sg/programmes/93/bmi-calculator 
 '''
 )

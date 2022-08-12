@@ -80,8 +80,8 @@ xgb_param = {
 }
 grid_xgb = GridSearchCV(xgb_model, xgb_param, scoring='roc_auc', cv=5, n_jobs=-1)
 
-# Accuracy of Random Forest: 87%
-# ROC AUC of Random Forest: 0.87
+# Accuracy of Decision Trees: 87%
+# ROC AUC of Decision Trees: 0.87
 tree_model = tree.DecisionTreeClassifier(random_state=42)
 tree_param = {
     'max_features': ['sqrt', 'log2'],
@@ -138,5 +138,3 @@ for i in range(len(models)):
     print("Accuracy for " + model_names[i] + ":")
     print(acc)
     print("ROC AUC Score:", round(auc, 2))
-
-# Save parameters of XGBClassifier model to use in website

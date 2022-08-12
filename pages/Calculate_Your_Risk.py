@@ -180,6 +180,7 @@ def data_breakdown(gender, age, hypertension, heart, marriage, work, residence, 
         st.markdown(
         '''
             #### Your body mass index is higher than average and could attribute to your high risk of suffering a stroke
+            #### Try to aim for a BMI of less than 25
             ##### Here are some ways to reduce your BMI:
             1. Balance your food choices
             2. Watch what you eat
@@ -195,15 +196,15 @@ def data_breakdown(gender, age, hypertension, heart, marriage, work, residence, 
 
 with st.form("my_form"):
     gender = conversion["_gender"][st.radio("Select your gender", ["Male", "Female"])]
-    age = convert_numeric(st.number_input("Enter your age", min_value=0, step=1), "age")
+    age = convert_numeric(st.number_input("Enter your age", min_value=0, max_value=120, step=1), "age")
     hypertension = conversion["_hypertension"][st.radio("Do you have hypertension?", ["Yes", "No"])]
     heart = conversion["_heart"][st.radio("Do you have heart disease?", ["Yes", "No"])]
     marriage = conversion["_marriage"][st.radio("Have you been married?", ["Yes", "No"])]
     work = conversion["_work"][st.radio("What kind of job do you have?", ["Government job", "Private", "Self-employed", "Child"])]
     residence = conversion["_residence"][st.radio("What is your residence type?", ["Rural", "Urban"])]
-    glucose = convert_numeric(st.number_input("What is your average glucose level? (in mg / dL)", min_value=0), "avg_glucose_level")
+    glucose = convert_numeric(st.number_input("What is your average glucose level? (in mg / dL)", min_value=0.0, max_value=1000.0, step=0.1), "avg_glucose_level")
     st.markdown('''[How do I measure my average glucose level?](https://www.healthhub.sg/programmes/162/diabetes-hub/diabetes-management/monitoring)''')
-    bmi = convert_numeric(st.number_input("What is your BMI (Body Mass Index)?", min_value=0.0, step=0.1), "bmi")
+    bmi = convert_numeric(st.number_input("What is your BMI (Body Mass Index)?", min_value=0.0, max_value=100.0, step=0.1), "bmi")
     st.markdown('''[How do I measure my BMI?](https://www.healthhub.sg/programmes/93/bmi-calculator)''')
     smoking = conversion["_smoking"][st.radio("What is your smoking status?", ["Formerly smoked", "Never smoked", "Smokes"])]
     
@@ -219,5 +220,5 @@ if submitted:
     if boolean:
         data_breakdown(gender, age, hypertension, heart, marriage, work, residence, glucose, bmi, smoking)
     else:
-        st.write("Do continue keeping up with your healthy lifestyle to enjoy a stroke-free life!")
+        st.markdown('''# Do continue keeping up with your healthy lifestyle to enjoy a stroke-free life!''')
 
